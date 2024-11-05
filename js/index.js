@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
     getJSON("http://localhost:3000/books")
-    .then(books => books.forEach(renderBook))
+    .then(books => books.forEach(book => {
+
+        const li = document.createElement('li')
+        li.textContent = book.title
+        li.addEventListener("click", () => renderBook(book))
+
+        document.querySelector("ul#list").append(li)
+    }))
 });
 
 function renderUsers(book, bookUsers) {
@@ -14,14 +21,13 @@ function renderUsers(book, bookUsers) {
 }
 
 function renderBook(book) {
-    const li = document.createElement('li')
+    document.querySelector("#show-panel").innerHTML = ""
 
     const bookId = document.createElement('p')
     bookId.textContent = book.id
 
     const bookTitle = document.createElement('h1')
     bookTitle.textContent = book.title
-    bookTitle.classList.add("book-title")
 
     const bookSubtitle = document.createElement('h2')
     bookSubtitle.textContent = book.subtitle
@@ -43,20 +49,9 @@ function renderBook(book) {
 
     const likeBtn = document.createElement('button')
     likeBtn.textContent = "LIKE"
-
     likeBtn.addEventListener("click", (event) => likeHandler(event, book, bookUsers));
-
-    li.append(bookId, bookTitle, bookSubtitle, bookDescr, bookAuthor, bookImg, likeLabel, bookUsers, likeBtn)
-    document.querySelector("ul#list").append(li)
-
-    bookTitle.addEventListener("click", () => {
-        const showPanel = document.querySelector("div#show-panel")
-        showPanel.innerHTML = li.innerHTML;
-        
-        showPanel.querySelector("button").addEventListener("click", event => {
-            likeHandler(event, book, bookUsers)
-        });
-    })
+    
+    document.querySelector("#show-panel").append(bookId, bookTitle, bookSubtitle, bookDescr, bookAuthor, bookImg, likeLabel, bookUsers, likeBtn)
 }
 
 function getJSON(url) {
